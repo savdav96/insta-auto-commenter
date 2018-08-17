@@ -19,7 +19,7 @@ friends[0] = "arancicarini"
 composite_list = [friends[x:x+3] for x in range(0, len(friends),3)]
 print(composite_list)
 
-API = InstagramAPI("savoebbasta", "Ignazio96")
+API = InstagramAPI("savoebbasta", "")
 API.login()
 
 
