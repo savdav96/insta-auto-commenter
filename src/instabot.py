@@ -1,5 +1,6 @@
-from InstagramAPI import InstagramAPI
-import time, requests, random
+from random import randint
+from src.connection import API, get_media_id
+from src.antiantispam import run
 
 
 def get_usernames(api, user_id):
@@ -19,12 +20,8 @@ def get_usernames(api, user_id):
         followers.extend(cleared)
         next_max_id = api.LastJson.get('next_max_id', '')
 
+    print("[INFO] Collected " + str(len(followers)) + " usernames")
     return followers
-
-
-def get_media_id(url):
-    req = requests.get('https://api.instagram.com/oembed/?url={}'.format(url))
-    return req.json()['media_id']
 
 
 def mass_comment(followers, api, media_id):
@@ -40,28 +37,23 @@ def mass_comment(followers, api, media_id):
         status = api.LastResponse.status_code
 
         if status != 200:
-            print(status)
-            time.sleep(3600)
+            print("[ERROR]" + str(status))
+            run(1, randint(3600, 5400))
         else:
-            print("Done: " + comment)
+            print("[INFO] Done: " + comment)
             count = count + 1
-            if count == 15:
-                time.sleep(3600)
+            if count > randint(13, 16):
+                print("[WARNING] Over 13 to 16 comments")
+                run(randint(0, 9), randint(3600, 5400), randint(3600, 5400))
                 count = 0
             else:
-                time.sleep(15)
-
-    print("Success!")
+                run(randint(0, 1), randint(100, 200))
+    print("[INFO] Success!")
 
 
 if __name__ == "__main__":
 
-    API = InstagramAPI("savoebbasta", "Ignazio96")
-    API.login()
-
     friends = get_usernames(API, API.username_id)
-    print(len(friends))
-    #mass_comment(friends, API, get_media_id(""))  # TODO search url
+    friends.remove("schiavo.bancomat")
+    mass_comment(friends, API, get_media_id("https://www.instagram.com/p/BpFJRcuCoux/"))
 
-
-    random.randint(3600, 7200)
