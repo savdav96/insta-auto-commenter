@@ -1,5 +1,5 @@
 import time
-from src.connection import API, get_media_id
+from src.client import API, get_media_id
 
 
 # define the function blocks
@@ -17,39 +17,41 @@ def comment(url_idx, str_idx):
     str_idx = str_idx % len(strs)
     media_id = get_media_id(urls[url_idx])
     API.comment(media_id, strs[str_idx])
-    print("[INFO] commented on " + media_id)
+    print("[INFO] commented " + strs[str_idx] + " on " + urls[url_idx])
 
 
 def like(url_idx, arg1=None):
     url_idx = url_idx % len(urls)
     media_id = get_media_id(urls[url_idx])
     API.like(media_id)
-    print("[INFO] liked " + media_id)
+    print("[INFO] liked " + urls[url_idx])
 
 
-def feed():
+def feed(arg1=None):
     API.getPopularFeed()
     print("[INFO] getting feed")
 
 
 actions = {0: none,
            1: wait,
-           2: comment,
-           3: like,
-           4: feed,
-           5: wait, 6: wait, 7: wait, 8: wait, 9: wait}
+           2: wait,
+           3: wait,
+           4: comment,
+           5: like,
+           6: feed}
 
 
 def run(action_number, *args):
-    print("[WARNING] AntiAntiSpam Enabled")
+    print("[INFO] AntiAntiSpam Enabled")
     actions[action_number](*args)
 
 
+# Test
 if __name__ == "__main__":
     run(2, "id", "ciao")
 
 
-urls = ["https://www.instagram.com/p/BpEs3H3BfUn/",
+urls = ("https://www.instagram.com/p/BpEs3H3BfUn/",
         "https://www.instagram.com/p/BpDXZgclLFm/",
         "https://www.instagram.com/p/BpACo2WC4hB/",
         "https://www.instagram.com/p/BpBdjrnifA2/",
@@ -59,9 +61,9 @@ urls = ["https://www.instagram.com/p/BpEs3H3BfUn/",
         "https://www.instagram.com/p/Bo989LsBp5F/",
         "https://www.instagram.com/p/BpDYORwAM0F/",
         "https://www.instagram.com/p/BpFdfmBjlqH/",
-        "https://www.instagram.com/p/BpFDg56D-eH/"]
+        "https://www.instagram.com/p/BpFDg56D-eH/")
 
-strs = ["Nice!",
+strs = ("Nice!",
         "Awesome",
         "itz Good!",
         "jhahahah",
@@ -71,4 +73,4 @@ strs = ["Nice!",
         "nicezz",
         "likeit",
         "I loveit!",
-        "yyeeah!"]
+        "yyeeah!")

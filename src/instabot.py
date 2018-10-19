@@ -1,5 +1,5 @@
 from random import randint
-from src.connection import API, get_media_id
+from src.client import API, get_media_id
 from src.antiantispam import run
 
 
@@ -16,8 +16,8 @@ def get_usernames(api, user_id):
 
         api.getUserFollowers(user_id, maxid=next_max_id)
 
-        cleared = [user['username'] for user in api.LastJson.get('users', []) if not user['is_verified']]
-        followers.extend(cleared)
+        names = [user['username'] for user in api.LastJson.get('users', []) if not user['is_verified']]
+        followers.extend(names)
         next_max_id = api.LastJson.get('next_max_id', '')
 
     print("[INFO] Collected " + str(len(followers)) + " usernames")
@@ -26,10 +26,10 @@ def get_usernames(api, user_id):
 
 def mass_comment(followers, api, media_id):
     
-    composite_list = [followers[x:x + 3] for x in range(0, len(followers), 3)]
+    grouped_list = [followers[x:x + 3] for x in range(0, len(followers), 3)]
     count = 0
 
-    for group in composite_list:
+    for index, group in enumerate(grouped_list, start=1):
 
         comment = "@" + group[0] + " " + "@" + group[1] + " " + "@" + group[2]
 
@@ -40,20 +40,19 @@ def mass_comment(followers, api, media_id):
             print("[ERROR]" + str(status))
             run(1, randint(3600, 5400))
         else:
-            print("[INFO] Done: " + comment)
+            print("[INFO] Commented: '" + comment + "' [" + str(index) + " of " + str(len(grouped_list)) + "]")
             count = count + 1
             if count > randint(13, 16):
-                print("[WARNING] Over 13 to 16 comments")
-                run(randint(0, 9), randint(3600, 5400), randint(3600, 5400))
+                print("[WARNING] Reached 13 up to 16 comments")
+                run(randint(0, 6), randint(2700, 3600), randint())
                 count = 0
             else:
-                run(randint(0, 1), randint(100, 200))
+                run(randint(0, 2), randint(100, 200))
     print("[INFO] Success!")
 
 
 if __name__ == "__main__":
 
     friends = get_usernames(API, API.username_id)
-    friends.remove("schiavo.bancomat")
     mass_comment(friends, API, get_media_id("https://www.instagram.com/p/BpFJRcuCoux/"))
 
