@@ -24,7 +24,7 @@ def get_usernames(api, user_id):
     return followers
 
 
-def mass_comment(followers, api, media_id):
+def comment_by_tag(followers, api, media_id):
     
     grouped_list = [followers[x:x + 3] for x in range(0, len(followers), 3)]
     count = 0
@@ -51,8 +51,51 @@ def mass_comment(followers, api, media_id):
     print("[INFO] Success!")
 
 
+def comment_by_word(word, api, media_id):
+
+    max_comments = 400
+    count = 0
+
+    while count < max_comments:
+        if count % 40 == 0 and count != 0:
+            print("[INFO] No. of comments reached: " + str(count))
+            run(1, randint(3600, 4500))
+
+        for letter in word:
+
+            api.comment(media_id, letter)
+            status = api.LastResponse.status_code
+
+            if status != 200:
+                print("[ERROR] " + str(status))
+                run(1, randint(100, 200))
+
+            else:
+                count = count + 1
+                print("[INFO] Commented: '" + letter + "' [" + str(count) + " of " + str(max_comments) + "]")
+                run(1, randint(4, 10))
+
+        run(1, randint(10, 20))
+
+    print("[INFO] Reached " + str(max_comments) + " daily comments.")
+
+
 if __name__ == "__main__":
 
-    friends = get_usernames(API, API.username_id)
-    mass_comment(friends, API, get_media_id("https://www.instagram.com/p/BpFJRcuCoux/"))
+    option = input("Welcome to Instagram mass commenter:\n"
+                    "Choose option:\n"
+                    "[1] For commenting by tagged followers\n"
+                    "[2] For commenting by prompted word\n")
+
+    if option == 1 :
+
+        friends = get_usernames(API, API.username_id)
+        link = input("Paste instagram link post\n")
+        comment_by_tag(friends, API, get_media_id(link))
+
+    else:
+        link = input("Paste instagram link post\n")
+        word = input("Type the comment\n")
+        comment_by_word(word, API, get_media_id(link))
+
 
