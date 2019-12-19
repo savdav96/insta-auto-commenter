@@ -20,5 +20,6 @@ while True:
 
 
 def get_media_id(url):
+    url = "https://www.instagram.com/p/"+url
     req = requests.get('https://api.instagram.com/oembed/?url={}'.format(url))
     return req.json()['media_id']

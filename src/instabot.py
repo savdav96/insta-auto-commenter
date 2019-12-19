@@ -4,7 +4,6 @@ from src.antiantispam import run
 
 
 def get_usernames(api, user_id):
-
     followers = []
 
     next_max_id = True
@@ -25,7 +24,6 @@ def get_usernames(api, user_id):
 
 
 def comment_by_tag(followers, api, media_id):
-    
     grouped_list = [followers[x:x + 3] for x in range(0, len(followers), 3)]
     count = 0
 
@@ -52,7 +50,6 @@ def comment_by_tag(followers, api, media_id):
 
 
 def comment_by_word(word, api, media_id):
-
     max_comments = 400
     count = 0
 
@@ -83,19 +80,21 @@ def comment_by_word(word, api, media_id):
 if __name__ == "__main__":
 
     option = input("Welcome to Instagram mass commenter:\n"
-                    "Choose option:\n"
-                    "[1] For commenting by tagged followers\n"
-                    "[2] For commenting by prompted word\n")
+                   "Choose option:\n"
+                   "[1] For commenting by tagged followers\n"
+                   "[2] For commenting by prompted word\n")
 
-    if option == 1 :
+    link = input("Paste Instagram link post (after p/)\n")
+    while True:
+        if option == "1":
+            friends = get_usernames(API, API.username_id)
+            comment_by_tag(friends, API, get_media_id(link))
+            break
 
-        friends = get_usernames(API, API.username_id)
-        link = input("Paste instagram link post\n")
-        comment_by_tag(friends, API, get_media_id(link))
+        elif option == "2":
+            word = input("Type the comment\n")
+            comment_by_word(word, API, get_media_id(link))
+            break
 
-    else:
-        link = input("Paste instagram link post\n")
-        word = input("Type the comment\n")
-        comment_by_word(word, API, get_media_id(link))
-
-
+        else:
+            print("[WARN] Choose a correct option")
